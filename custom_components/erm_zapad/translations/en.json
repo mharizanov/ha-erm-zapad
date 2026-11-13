@@ -1,0 +1,79 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "ERM Zapad Outage Check",
+        "description": "Checks the planned-outage PDF that ERM Zapad (Electrohold) publishes every day and notifies you when your area is listed for the next day.",
+        "data": {
+          "keyword": "Settlement or district",
+          "notify_services": "Notification targets",
+          "check_time": "Daily check time",
+          "base_date": "Calibration date",
+          "base_doc_id": "Calibration doc_id",
+          "drift_window": "doc_id search window (±)",
+          "notification_title": "Notification title",
+          "endpoint": "ERM Zapad endpoint URL",
+          "regex": "Outage line regex",
+          "sensor_entity_id": "Sensor entity ID"
+        },
+        "data_description": {
+          "keyword": "Name as it appears in the PDF, e.g. Ихтиман or Обеля. Case does not matter; it must match a whole word.",
+          "notify_services": "notify.* services to alert. Leave empty to only update the sensor.",
+          "check_time": "Local time. The next day's PDF is usually published in the evening; the default 21:15 is after that.",
+          "base_date": "Anchor for computing the daily doc_id. Leave the default unless the check reports a calibration error.",
+          "base_doc_id": "The doc_id whose PDF lists the outages for the day after the calibration date.",
+          "drift_window": "How many doc_ids either side of the computed one to try.",
+          "regex": "Advanced. The default contains a keyword placeholder in curly braces, replaced by the keyword. Groups: 1 area, 2 start, 3 end.",
+          "sensor_entity_id": "Entity ID of the status sensor."
+        }
+      }
+    },
+    "error": {
+      "keyword_required": "Enter a settlement or district name.",
+      "invalid_regex": "The regex does not compile."
+    },
+    "abort": {
+      "already_configured": "ERM Zapad Outage Check is already set up."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "ERM Zapad options",
+        "description": "Changes apply immediately (the entry reloads).",
+        "data": {
+          "keyword": "Settlement or district",
+          "notify_services": "Notification targets",
+          "check_time": "Daily check time",
+          "base_date": "Calibration date",
+          "base_doc_id": "Calibration doc_id",
+          "drift_window": "doc_id search window (±)",
+          "notification_title": "Notification title",
+          "endpoint": "ERM Zapad endpoint URL",
+          "regex": "Outage line regex",
+          "sensor_entity_id": "Sensor entity ID"
+        },
+        "data_description": {
+          "keyword": "Name as it appears in the PDF, e.g. Ихтиман or Обеля. Case does not matter; it must match a whole word.",
+          "notify_services": "notify.* services to alert. Leave empty to only update the sensor.",
+          "check_time": "Local time. The next day's PDF is usually published in the evening; the default 21:15 is after that.",
+          "base_date": "Anchor for computing the daily doc_id. Leave the default unless the check reports a calibration error.",
+          "base_doc_id": "The doc_id whose PDF lists the outages for the day after the calibration date.",
+          "drift_window": "How many doc_ids either side of the computed one to try.",
+          "regex": "Advanced. The default contains a keyword placeholder in curly braces, replaced by the keyword. Groups: 1 area, 2 start, 3 end.",
+          "sensor_entity_id": "Entity ID of the status sensor."
+        }
+      }
+    },
+    "error": {
+      "keyword_required": "Enter a settlement or district name.",
+      "invalid_regex": "The regex does not compile."
+    }
+  },
+  "services": {
+    "check": {
+      "name": "Check for outages",
+      "description": "Fetch tomorrow's planned-outage PDF now and notify if the keyword is listed."
+    }
+  }
+}
