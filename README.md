@@ -69,21 +69,23 @@ address-level answer ERM Zapad offers a check by customer number on the same pag
    and search it.
 3. **Notification targets**: pick one or more `notify.*` services. Leave empty if
    you only want the sensor and the event.
-4. Leave the other fields at their defaults and submit.
+4. **Daily check time**: keep 21:15 unless you have a reason to change it. Submit.
 5. Optional: run the action **ERM Zapad Outage Check: Check for outages**
    (`erm_zapad.check`) from **Developer tools → Actions** to test it right away.
    The sensor should change to `no outage` or to an outage line. Note that a test
    run also sends any outage or failure notification.
 
-All settings can be changed later with **Configure** on the integration card.
+The setup form asks only for these three. Everything else, including the
+calibration, has working defaults and can be changed later with **Configure**
+on the integration card.
 
 | Setting | Meaning | Default |
 | --- | --- | --- |
 | Settlement or district (`keyword`) | Word(s) to look for, matched as a whole word | required |
 | Notification targets (`notify_services`) | `notify.*` services to alert | none |
 | Daily check time (`check_time`) | Local time of the daily check | `21:15:00` |
-| Calibration date (`base_date`) | Anchor for computing the daily `doc_id` | `2026-11-13` |
-| Calibration doc_id (`base_doc_id`) | `doc_id` of the PDF for the day after the calibration date | `1841` |
+| Calibration date (`base_date`) | Anchor for computing the daily `doc_id` (Configure only) | `2025-11-18` |
+| Calibration doc_id (`base_doc_id`) | `doc_id` the check fetches on the calibration date (Configure only) | `1481` |
 | doc_id search window (`drift_window`) | How many ids either side of the computed one to try | `3` |
 | Notification title (`notification_title`) | Title of the outage notification | `Електрохолд планирани спирания` |
 | Endpoint (`endpoint`) | ERM Zapad PDF endpoint | `https://info.ermzapad.bg/webint/vok/avplan.php` |
@@ -148,11 +150,13 @@ automation:
 
 ## Calibration and troubleshooting
 
-ERM Zapad numbers the daily PDFs with a `doc_id` that grows by one per day. The
-integration computes today's id as `base_doc_id + (today − base_date)` and then
-checks the date printed in the PDF. If ERM skips or repeats a number, the
-`doc_id_drift` attribute shows the offset that worked. While it stays within
-`drift_window` nothing needs to be done.
+Normally you never touch the calibration. ERM Zapad numbers the daily PDFs with
+a `doc_id` that grows by one per day. The integration computes today's id as
+`base_doc_id + (today − base_date)`, checks the date printed in the PDF, and
+tries the neighbouring ids if it does not match. The `doc_id_drift` attribute
+shows the offset that worked. While it stays within `drift_window` (±3) nothing
+needs to be done. Between November 2025 and November 2026 ERM skipped one day
+(25.12.2025), and the drift has been 0 since then.
 
 If the sensor shows `calibration error` for several days:
 

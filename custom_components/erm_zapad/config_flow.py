@@ -110,28 +110,36 @@ def _validate(data: dict[str, Any]) -> dict[str, str]:
     return errors
 
 
-def _build_schema(hass: HomeAssistant, defaults: dict[str, Any]) -> vol.Schema:
+def _build_schema(
+    hass: HomeAssistant, defaults: dict[str, Any], advanced: bool = True
+) -> vol.Schema:
+    """Setup form shows the basic fields; the options form shows all of them."""
     current = defaults.get(CONF_NOTIFY_SERVICES) or []
     notify_opts = _notify_options(hass, current)
+    basic = {
+        vol.Required(
+            CONF_KEYWORD, default=defaults.get(CONF_KEYWORD, "")
+        ): TextSelector(),
+        vol.Optional(
+            CONF_NOTIFY_SERVICES, default=current
+        ): SelectSelector(
+            SelectSelectorConfig(
+                options=notify_opts,
+                multiple=True,
+                custom_value=True,
+                mode=SelectSelectorMode.DROPDOWN,
+            )
+        ),
+        vol.Optional(
+            CONF_CHECK_TIME,
+            default=defaults.get(CONF_CHECK_TIME, DEFAULT_CHECK_TIME),
+        ): TimeSelector(),
+    }
+    if not advanced:
+        return vol.Schema(basic)
     return vol.Schema(
         {
-            vol.Required(
-                CONF_KEYWORD, default=defaults.get(CONF_KEYWORD, "")
-            ): TextSelector(),
-            vol.Optional(
-                CONF_NOTIFY_SERVICES, default=current
-            ): SelectSelector(
-                SelectSelectorConfig(
-                    options=notify_opts,
-                    multiple=True,
-                    custom_value=True,
-                    mode=SelectSelectorMode.DROPDOWN,
-                )
-            ),
-            vol.Optional(
-                CONF_CHECK_TIME,
-                default=defaults.get(CONF_CHECK_TIME, DEFAULT_CHECK_TIME),
-            ): TimeSelector(),
+            **basic,
             vol.Required(
                 CONF_BASE_DATE,
                 default=defaults.get(CONF_BASE_DATE, DEFAULT_BASE_DATE),
@@ -182,11 +190,13 @@ class ErmZapadConfigFlow(ConfigFlow, domain=DOMAIN):
             data = _normalize(user_input)
             errors = _validate(data)
             if not errors:
+                # Only the basic fields are stored; the rest come from the
+                # defaults until changed under Configure.
                 return self.async_create_entry(title=NAME, data=data)
             defaults.update(data)
         return self.async_show_form(
             step_id="user",
-            data_schema=_build_schema(self.hass, defaults),
+            data_schema=_build_schema(self.hass, defaults, advanced=False),
             errors=errors,
         )
 

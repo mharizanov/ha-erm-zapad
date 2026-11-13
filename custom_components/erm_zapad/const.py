@@ -26,11 +26,12 @@ DEFAULT_CHECK_TIME = "21:15:00"
 DEFAULT_DRIFT_WINDOW = 3
 
 # Calibration anchor. ERM Zapad numbers its daily PDFs with a doc_id that grows by
-# one per day. The check run on BASE_DATE fetches BASE_DOC_ID, whose PDF lists the
-# outages for BASE_DATE + 1 day. Verified 2026-11-13: doc_id 1841 is the PDF for
-# 14.11.2026. Re-anchor in the options if doc_id_drift grows towards drift_window.
-DEFAULT_BASE_DATE = "2026-11-13"
-DEFAULT_BASE_DOC_ID = 1841
+# one per day. On day D the check expects doc_id BASE_DOC_ID + (D - BASE_DATE) to
+# be the PDF for D + 1 and scans ±drift_window around it. Checked against every
+# PDF from 18.11.2025 to 10.11.2026 and for 13-14.11.2026: one gap (no PDF for 25.12.2025), drift 0 since
+# then. Change the anchor only if the drift approaches drift_window.
+DEFAULT_BASE_DATE = "2025-11-18"
+DEFAULT_BASE_DOC_ID = 1481
 
 # Minutes after the daily check at which the freshness watchdog runs.
 DEFAULT_WATCHDOG_DELAY_MIN = 10
