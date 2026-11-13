@@ -79,13 +79,15 @@ The setup form asks only for these three. Everything else, including the
 calibration, has working defaults and can be changed later with **Configure**
 on the integration card.
 
+The first three settings are in the setup form; the others only under **Configure**.
+
 | Setting | Meaning | Default |
 | --- | --- | --- |
 | Settlement or district (`keyword`) | Word(s) to look for, matched as a whole word | required |
 | Notification targets (`notify_services`) | `notify.*` services to alert | none |
 | Daily check time (`check_time`) | Local time of the daily check | `21:15:00` |
-| Calibration date (`base_date`) | Anchor for computing the daily `doc_id` (Configure only) | `2025-11-18` |
-| Calibration doc_id (`base_doc_id`) | `doc_id` the check fetches on the calibration date (Configure only) | `1481` |
+| Calibration date (`base_date`) | Anchor date for computing the daily `doc_id` | `2025-11-18` |
+| Calibration doc_id (`base_doc_id`) | `doc_id` paired with the calibration date | `1481` |
 | doc_id search window (`drift_window`) | How many ids either side of the computed one to try | `3` |
 | Notification title (`notification_title`) | Title of the outage notification | `Електрохолд планирани спирания` |
 | Endpoint (`endpoint`) | ERM Zapad PDF endpoint | `https://info.ermzapad.bg/webint/vok/avplan.php` |
